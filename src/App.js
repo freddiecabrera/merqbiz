@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import { styled } from 'styletron-react';
 import Modal from './components/Modal';
+import Task from './components/Task';
 
 const Div = styled('div', props => ({
   display: 'flex',
@@ -39,18 +40,26 @@ function App() {
   const [tasks, addTasks] = useState(getTasksFromSessionStorage() || []);
   const [error, updateError] = useState(null);
 
+    const storeTasksInSessionStorage = (tasksToBeStored) => {
+        sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
+    }
+
   const handleError = (err) => {
     updateError(err);
     setTimeout(() => updateError(false), 3000)
+  }
+
+  const removeTasks = (id) => {
+    const filteredTasks = tasks.filter(task => task.id !== id);
+    addTasks(filteredTasks);
+    storeTasksInSessionStorage(filteredTasks);
   }
 
   return (
     <Div>
       <TaskList>
         {tasks.map(task => (
-          <div key={task.id}>
-            <span>{task.text}</span>
-          </div>
+          <Task removeTasks={removeTasks} task={task} />
         ))}
       </TaskList>
       <button onClick={() => openModal(true)}>create todo</button>
