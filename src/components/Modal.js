@@ -50,7 +50,7 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
 
         addTasks([...tasks, {
             id: uniqid(),
-            task,
+            text: task,
             priority: priority.value
         }]);
 
