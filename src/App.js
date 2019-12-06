@@ -31,8 +31,13 @@ const TaskList = styled('div', props => ({
 }));
 
 function App() {
+  const getTasksFromSessionStorage = () => {
+    const tasksFromSessionstorage = sessionStorage.getItem('storedTasks');
+    console.log('tasksFromSessionstorage', JSON.parse(tasksFromSessionstorage));
+    return tasksFromSessionstorage ? JSON.parse(tasksFromSessionstorage) : null;
+  }
   const [isModalOpen, openModal] = useState(false);
-  const [tasks, addTasks] = useState([]);
+  const [tasks, addTasks] = useState(getTasksFromSessionStorage() || []);
   const [error, updateError] = useState(null);
 
   const handleError = (err) => {
