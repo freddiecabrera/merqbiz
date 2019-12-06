@@ -45,14 +45,21 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
         setTaskValue(value);
     };
 
+    const storeTasksInSessionStorage = (tasksToBeStored) => {
+        sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
+    }
+
     const handleSubmit = () => {
         if (task.length <= 0) return handleError('Please add a task');
 
-        addTasks([...tasks, {
+        const newTasks = [...tasks, {
             id: uniqid(),
-            task,
+            text: task,
             priority: priority.value
-        }]);
+        }]
+
+        storeTasksInSessionStorage(newTasks);
+        addTasks(newTasks);
 
         openModal(false);
     }
