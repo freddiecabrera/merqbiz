@@ -33,7 +33,6 @@ const TaskList = styled('div', props => ({
 function App() {
   const getTasksFromSessionStorage = () => {
     const tasksFromSessionstorage = sessionStorage.getItem('storedTasks');
-    console.log('tasksFromSessionstorage', JSON.parse(tasksFromSessionstorage));
     return tasksFromSessionstorage ? JSON.parse(tasksFromSessionstorage) : null;
   }
   const [isModalOpen, openModal] = useState(false);
