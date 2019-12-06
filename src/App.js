@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import { styled } from 'styletron-react';
 import Modal from './components/Modal';
@@ -39,10 +40,15 @@ function App() {
   const [isModalOpen, openModal] = useState(false);
   const [tasks, addTasks] = useState(getTasksFromSessionStorage() || []);
   const [error, updateError] = useState(null);
+  const [isEditing, updateEditModeState] = useState(false);
 
-    const storeTasksInSessionStorage = (tasksToBeStored) => {
-        sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
-    }
+    useEffect(() => {
+        isEditing && openModal(true);
+    }, [isEditing, isModalOpen]);
+
+  const storeTasksInSessionStorage = (tasksToBeStored) => {
+      sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
+  }
 
   const handleError = (err) => {
     updateError(err);
@@ -59,16 +65,17 @@ function App() {
     <Div>
       <TaskList>
         {tasks.map(task => (
-          <Task removeTasks={removeTasks} task={task} />
+          <Task key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
         ))}
       </TaskList>
       <button onClick={() => openModal(true)}>create todo</button>
-      <Modal 
+      {isModalOpen && <Modal 
+        isEditing={isEditing}
+        updateEditModeState={updateEditModeState}
         tasks={tasks}
         handleError={handleError} 
         addTasks={addTasks} 
-        open={isModalOpen} 
-        openModal={openModal} />
+        openModal={openModal} />}
 
         <ErrorContainer display={error ? 'flex' : 'none'}>
           <span>{error}</span>

@@ -35,10 +35,15 @@ const InputsContainer = styled('div', props => ({
 
 }));
 
-function Modal({ open, openModal, addTasks, handleError, tasks }) {
-    const [priority, updatePriority] = useState({ value: 1, label: 'Low' });
+function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditModeState }) {
+    const initPriority = 
+        isEditing ? priorities.filter(priority => priority.value === isEditing.priority)[0] : defaultOption;
+    const initTaskValue = 
+        isEditing ? isEditing.text : '';
 
-    const [task, setTaskValue] = useState('');
+        
+    const [priority, updatePriority] = useState(initPriority);
+    const [task, setTaskValue] = useState(initTaskValue);
 
     const handleOnChange = event => {
         const { value } = event.target;
@@ -50,7 +55,7 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
     }
 
     const handleSubmit = () => {
-        if (task.length <= 0) return handleError('Please add a task');
+        if (task.length <= 0) return handleError('Task cannot be empty');
 
         const newTasks = [...tasks, {
             id: uniqid(),
@@ -64,7 +69,30 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
         openModal(false);
     }
 
-    if (!open) return null;
+    const handleEditSubmit = () => {
+        if (task.length <= 0) return handleError('Task cannot be empty');
+        const editedTasks = [...tasks];
+
+        editedTasks.forEach(item => {
+            if (item.id === isEditing.id) {
+                item.text = task;
+                item.priority = priority.value;
+            }
+        });
+
+        storeTasksInSessionStorage(editedTasks);
+        addTasks(editedTasks);
+        updateEditModeState(false);
+
+        openModal(false);
+    }
+
+    const handleClose = () => {
+        openModal(false);
+        updateEditModeState(false);
+    }
+    
+    console.log(priority, task);
 
     return (
         <Container>
@@ -75,16 +103,18 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
 
                 <InputsContainer>
                     <div>
-                        <Dropdown options={priorities} onChange={(e) => updatePriority(e)} value={defaultOption} placeholder="Select an priority" />
+                        <Dropdown options={priorities} onChange={(e) => updatePriority(e)} value={priority} placeholder="Select an priority" />
                     </div>
 
                     <div>
-                        <textarea onChange={handleOnChange} />
+                        <textarea value={task} onChange={handleOnChange} />
                     </div>
 
                     <div>
-                        <button onClick={() => openModal(false)}>cancel</button>
-                        <button onClick={handleSubmit}>submit</button>
+                        <button onClick={handleClose}>cancel</button>
+                        {isEditing 
+                        ? <button onClick={handleEditSubmit}>Done</button>
+                        : <button onClick={handleSubmit}>submit</button>}
                     </div>
 
                 </InputsContainer>
