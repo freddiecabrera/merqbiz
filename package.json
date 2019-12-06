@@ -11,7 +11,8 @@
     "react-dropdown": "^1.6.4",
     "react-scripts": "3.3.0",
     "styletron-engine-atomic": "^1.4.4",
-    "styletron-react": "^5.2.6"
+    "styletron-react": "^5.2.6",
+    "uniqid": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

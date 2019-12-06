@@ -28,10 +28,10 @@ function App() {
   const [error, updateError] = useState(null);
 
   const handleError = (err) => {
-    setTimeout(() => updateError(err), 3000)
+    updateError(err);
+    setTimeout(() => updateError(false), 3000)
   }
 
-console.log('TASKS HERE', tasks);
   return (
     <Div>
       <button onClick={() => openModal(true)}>create todo</button>

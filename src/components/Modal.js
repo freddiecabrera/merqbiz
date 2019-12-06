@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import Dropdown from 'react-dropdown'
+import uniqid from 'uniqid';
+
 import { styled } from 'styletron-react';
 import 'react-dropdown/style.css'
 
@@ -47,7 +49,7 @@ function Modal({ open, openModal, addTasks, handleError, tasks }) {
         if (task.length <= 0) return handleError('Please add a task');
 
         addTasks([...tasks, {
-            id: 'ID',
+            id: uniqid(),
             task,
             priority: priority.value
         }]);
