@@ -91,8 +91,6 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
         openModal(false);
         updateEditModeState(false);
     }
-    
-    console.log(priority, task);
 
     return (
         <Container>

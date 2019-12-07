@@ -41,10 +41,11 @@ function App() {
   const [tasks, addTasks] = useState(getTasksFromSessionStorage() || []);
   const [error, updateError] = useState(null);
   const [isEditing, updateEditModeState] = useState(false);
+  const [sortedByPriority, updateSortByPriority] = useState(false);
 
     useEffect(() => {
         isEditing && openModal(true);
-    }, [isEditing, isModalOpen]);
+    }, [isEditing]);
 
   const storeTasksInSessionStorage = (tasksToBeStored) => {
       sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
@@ -61,12 +62,20 @@ function App() {
     storeTasksInSessionStorage(filteredTasks);
   }
 
+  const sortByPriority = (tasks) => {
+    if (!sortedByPriority) return tasks;
+    const tasksClone = [...tasks]
+    return tasksClone.sort((a, b) => b.priority - a.priority);
+  }
+
   return (
     <Div>
       <TaskList>
-        {tasks.map(task => (
+        {sortByPriority(tasks).map(task => {
+          return (
           <Task key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
-        ))}
+        )})}
+        <a onClick={() => updateSortByPriority(true)}>Sort by Priority</a>
       </TaskList>
       <button onClick={() => openModal(true)}>create todo</button>
       {isModalOpen && <Modal 
