@@ -10,26 +10,61 @@ const Div = styled('div', props => ({
   height: '100vh',
   width: '100vw',
   alignItems: 'center',
-  justifyContent: 'center',
-  background: 'gray'
+  justifyContent: 'center'
 }));
 
 const ErrorContainer = styled('div', props => ({
   display: props.display,
+  height: '30px',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '12px',
-  background: 'red',
-  color: 'white',
+  border: '1px solid #e73b59',
+  borderRadius: '5px',
+  background: '#e73b59',
+  padding: '10px',
   position: 'absolute',
-  top: '20px', right: '20px'
+  top: '20px', right: '20px',
+  zIndex: 5,
+  color: '#E5E1DD'
 }));
 
 const TaskList = styled('div', props => ({
     display: 'flex',
-    maxWidth: '350px',
-    background: 'white',
-    flexDirection: 'column'
+    width: '500px',
+    background: '#2A2C42',
+    flexDirection: 'column',
+    padding: '20px 20px',
+    border: '1px solid #2A2C42',
+    borderRadius: '10px',
+    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)'
+}));
+
+const TitleContainer = styled('div', props => ({
+    display: 'flex',
+    width: '100%',
+    height: '100px',
+    justifyContent: 'center',
+    color: '#E5E1DD',
+}));
+
+export const ActionsContainer = styled('div', props => ({
+    display: 'flex',
+    width: '100%',
+}));
+
+export const Action = styled('div', props => ({
+  display: 'flex',
+  flexGrow: 1,
+  padding: '5px 0px 0px',
+  justifyContent: props.justify || 'flex-start',
+})) 
+
+const ActionText = styled('a', props => ({
+  cursor: 'pointer',
+  color: '#E5E1DD',
+  borderBottom: '1px solid #E5E1DD',
+  textTransform: 'uppercase',
+  fontSize: '12px'
 }));
 
 function App() {
@@ -71,13 +106,24 @@ function App() {
   return (
     <Div>
       <TaskList>
+        <TitleContainer>
+          <h1>Tasks</h1>
+        </TitleContainer>
         {sortByPriority(tasks).map(task => {
           return (
           <Task key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
         )})}
-        <a onClick={() => updateSortByPriority(true)}>Sort by Priority</a>
+        
+        <ActionsContainer>
+          <Action onClick={() => updateSortByPriority(true)}>
+            <ActionText>Sort by Priority</ActionText>
+          </Action>
+          <Action justify='flex-end' onClick={() => openModal(true)}>
+            <ActionText>create todo</ActionText>
+          </Action>
+        </ActionsContainer>
       </TaskList>
-      <button onClick={() => openModal(true)}>create todo</button>
+
       {isModalOpen && <Modal 
         isEditing={isEditing}
         updateEditModeState={updateEditModeState}
