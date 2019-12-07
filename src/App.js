@@ -10,19 +10,22 @@ const Div = styled('div', props => ({
   height: '100vh',
   width: '100vw',
   alignItems: 'center',
-  justifyContent: 'center',
-  background: '#1A1B27'
+  justifyContent: 'center'
 }));
 
 const ErrorContainer = styled('div', props => ({
   display: props.display,
+  height: '30px',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '12px',
-  background: 'red',
-  color: 'white',
+  border: '1px solid #e73b59',
+  borderRadius: '5px',
+  background: '#e73b59',
+  padding: '10px',
   position: 'absolute',
-  top: '20px', right: '20px'
+  top: '20px', right: '20px',
+  zIndex: 5,
+  color: '#E5E1DD'
 }));
 
 const TaskList = styled('div', props => ({
@@ -41,26 +44,25 @@ const TitleContainer = styled('div', props => ({
     width: '100%',
     height: '100px',
     justifyContent: 'center',
-    color: '#1A1B27',
+    color: '#E5E1DD',
 }));
 
-const ActionsContainer = styled('div', props => ({
+export const ActionsContainer = styled('div', props => ({
     display: 'flex',
     width: '100%',
 }));
 
-const Action = styled('div', props => ({
+export const Action = styled('div', props => ({
   display: 'flex',
-  color: 'white',
   flexGrow: 1,
-  padding: '5px 1px 0px',
+  padding: '5px 0px 0px',
   justifyContent: props.justify || 'flex-start',
 })) 
 
 const ActionText = styled('a', props => ({
   cursor: 'pointer',
-  color: 'white',
-  borderBottom: '1px solid white',
+  color: '#E5E1DD',
+  borderBottom: '1px solid #E5E1DD',
   textTransform: 'uppercase',
   fontSize: '12px'
 }));
@@ -100,8 +102,6 @@ function App() {
     const tasksClone = [...tasks]
     return tasksClone.sort((a, b) => b.priority - a.priority);
   }
-
-  console.log('tasks', tasks);
 
   return (
     <Div>

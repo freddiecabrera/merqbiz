@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+.drop-down-container {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.drop-down-control {
+  background-color: #191A26 !important;
+  border: 1px solid #191A26 !important;
+  border-radius: 5px !important;
+  color: #E5E1DD !important;
+}
+
+.drop-down-menu {
+  background-color: #292C42 !important;
+  color:#E5E1DD;
+  border: 1px solid #191A26 !important;
+  border-radius: 5px !important;
+}
+
+.drop-down-menu div:hover{
+  color:#E5E1DD;
+  background-color: #D94A22;
+}
+
+.drop-down-menu div{
+  color:#E5E1DD;
+}
+
+.is-selected {
+  background-color: #191A26 !important;
+  color:#E5E1DD !important;
+}
