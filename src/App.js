@@ -11,7 +11,7 @@ const Div = styled('div', props => ({
   width: '100vw',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'gray'
+  background: '#1A1B27'
 }));
 
 const ErrorContainer = styled('div', props => ({
@@ -27,9 +27,42 @@ const ErrorContainer = styled('div', props => ({
 
 const TaskList = styled('div', props => ({
     display: 'flex',
-    maxWidth: '350px',
-    background: 'white',
-    flexDirection: 'column'
+    width: '500px',
+    background: '#2A2C42',
+    flexDirection: 'column',
+    padding: '20px 20px',
+    border: '1px solid #2A2C42',
+    borderRadius: '10px',
+    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)'
+}));
+
+const TitleContainer = styled('div', props => ({
+    display: 'flex',
+    width: '100%',
+    height: '100px',
+    justifyContent: 'center',
+    color: '#1A1B27',
+}));
+
+const ActionsContainer = styled('div', props => ({
+    display: 'flex',
+    width: '100%',
+}));
+
+const Action = styled('div', props => ({
+  display: 'flex',
+  color: 'white',
+  flexGrow: 1,
+  padding: '5px 1px 0px',
+  justifyContent: props.justify || 'flex-start',
+})) 
+
+const ActionText = styled('a', props => ({
+  cursor: 'pointer',
+  color: 'white',
+  borderBottom: '1px solid white',
+  textTransform: 'uppercase',
+  fontSize: '12px'
 }));
 
 function App() {
@@ -68,16 +101,29 @@ function App() {
     return tasksClone.sort((a, b) => b.priority - a.priority);
   }
 
+  console.log('tasks', tasks);
+
   return (
     <Div>
       <TaskList>
+        <TitleContainer>
+          <h1>Tasks</h1>
+        </TitleContainer>
         {sortByPriority(tasks).map(task => {
           return (
           <Task key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
         )})}
-        <a onClick={() => updateSortByPriority(true)}>Sort by Priority</a>
+        
+        <ActionsContainer>
+          <Action onClick={() => updateSortByPriority(true)}>
+            <ActionText>Sort by Priority</ActionText>
+          </Action>
+          <Action justify='flex-end' onClick={() => openModal(true)}>
+            <ActionText>create todo</ActionText>
+          </Action>
+        </ActionsContainer>
       </TaskList>
-      <button onClick={() => openModal(true)}>create todo</button>
+
       {isModalOpen && <Modal 
         isEditing={isEditing}
         updateEditModeState={updateEditModeState}

@@ -19,7 +19,7 @@ const Container = styled('div', props => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'rgba(0, 0, 0, .3)'
+    background: 'rgba(0, 0, 0, .3)',
 }));
 
 const ModalForm = styled('div', props => ({
@@ -72,7 +72,6 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
     const handleEditSubmit = () => {
         if (task.length <= 0) return handleError('Task cannot be empty');
         const editedTasks = [...tasks];
-
         editedTasks.forEach(item => {
             if (item.id === isEditing.id) {
                 item.text = task;
@@ -82,7 +81,7 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
 
         storeTasksInSessionStorage(editedTasks);
         addTasks(editedTasks);
-        updateEditModeState(false);
+        updateEditModeState(false); 
 
         openModal(false);
     }
