@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from 'styletron-react';
+import {motion, useAnimation} from 'framer-motion';
 
-const Div = styled('div', props => ({
+const Div = styled(motion.div, props => ({
+  opacity: 0,
   display: 'flex',
   height: '40px',
   alignItems: 'center',
@@ -34,7 +36,8 @@ export const Button = styled('button', props => ({
 
 
 
-function Task({ task, removeTasks, updateEditModeState }) {
+function Task({ task, removeTasks, updateEditModeState, layoutTransition }) {
+    const controls = useAnimation();
     const { text, id } = task;
 
     const handleEdit = (e) => {
@@ -44,11 +47,29 @@ function Task({ task, removeTasks, updateEditModeState }) {
 
     const handleDelete = (e) => {
         e.stopPropagation();
-        removeTasks(id)
+        fadeAnimation(0).then(() => removeTasks(id));
+    }
+    
+    
+    const fadeAnimation = async (opacity) => {
+        await controls.start({
+            opacity,
+            transition: { duration: .5, ease: opacity ? 'easeIn' : 'easeOut' }
+        });
     }
 
+    useEffect(() => {
+        fadeAnimation(1)
+    }, []);
+
     return (
-        <Div onClick={handleEdit} key={id}>
+        <Div
+            layoutTransition={layoutTransition}
+            animate={controls}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }} 
+            onClick={handleEdit} 
+            key={id}>
             <TextContainer>
                 <span>{text}</span>
             </TextContainer>

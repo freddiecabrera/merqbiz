@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Dropdown from 'react-dropdown'
+import {motion, useAnimation} from 'framer-motion';
 import uniqid from 'uniqid';
 import '../App.css';
-
 import { styled } from 'styletron-react';
 import 'react-dropdown/style.css'
 import { ActionsContainer, Action } from '../App';
@@ -24,14 +24,16 @@ const Container = styled('div', props => ({
     justifyContent: 'center',
 }));
 
-const ModalBackground = styled('div', props => ({
+const ModalBackground = styled(motion.div, props => ({
+    opacity: 0,
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
     background: 'rgba(0, 0, 0, .5)',
     zIndex: 1
 }));
 
-const ModalForm = styled('div', props => ({
+const ModalForm = styled(motion.div, props => ({
+    opacity: 0,
     display: 'flex',
     width: '500px',
     background: '#2A2C42',
@@ -69,7 +71,7 @@ const TextArea = styled('textarea', props => ({
     borderRadius: '5px',
 }));
 
-function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditModeState }) {
+function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditModeState, animateOutError }) {
     const initPriority = 
         isEditing ? priorities.filter(priority => priority.value === isEditing.priority)[0] : defaultOption;
     const initTaskValue = 
@@ -77,6 +79,13 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
 
     const [priority, updatePriority] = useState(initPriority);
     const [task, setTaskValue] = useState(initTaskValue);
+    const modalBackgroundAnimation = useAnimation();
+    const modalAnimation = useAnimation();
+
+    useEffect(() => {
+        animateBackground(1);
+        animateForm(1);
+    }, [])    
 
     const handleOnChange = event => {
         const { value } = event.target;
@@ -85,6 +94,20 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
 
     const storeTasksInSessionStorage = (tasksToBeStored) => {
         sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
+    }
+
+    const animateBackground = async (opacity) => {
+        await modalBackgroundAnimation.start({
+            opacity,
+            transition: { duration: .2, ease: opacity ? 'easeOut' : 'easeIn' }
+        });
+    }
+
+    const animateForm = (opacity) => {
+        modalAnimation.start({
+            opacity,
+            transition: { duration: .2, ease: opacity ? 'easeOut' : 'easeIn' }
+        });
     }
 
     const handleSubmit = () => {
@@ -121,20 +144,24 @@ function Modal({ openModal, addTasks, handleError, tasks, isEditing, updateEditM
 
     const handleClose = (e) => {
         e.preventDefault();
-        openModal(false);
         updateEditModeState(false);
+        animateForm(0);
+        animateBackground(0).then(() => openModal(false));
+        animateOutError();
     }
 
     const handleCancel = (e) => {
         e.stopPropagation();
-        openModal(false);
         updateEditModeState(false);
+        animateForm(0);
+        animateBackground(0).then(() => openModal(false));
+        animateOutError();
     }
 
     return (
         <Container>
-            <ModalBackground id='modal-background' onClick={handleClose} />
-            <ModalForm>
+            <ModalBackground animate={modalBackgroundAnimation} id='modal-background' onClick={handleClose} />
+            <ModalForm animate={modalAnimation}>
                 <TitleContainer>
                     <h2>Add Task!</h2>
                 </TitleContainer>

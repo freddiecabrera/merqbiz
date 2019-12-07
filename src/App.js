@@ -1,5 +1,5 @@
-
 import React, {useState, useEffect} from 'react';
+import {motion, useAnimation} from 'framer-motion';
 import './App.css';
 import { styled } from 'styletron-react';
 import Modal from './components/Modal';
@@ -13,8 +13,9 @@ const Div = styled('div', props => ({
   justifyContent: 'center'
 }));
 
-const ErrorContainer = styled('div', props => ({
-  display: props.display,
+const ErrorContainer = styled(motion.div, props => ({
+  opacity: 0,
+  display: 'flex',
   height: '30px',
   alignItems: 'center',
   justifyContent: 'center',
@@ -23,7 +24,7 @@ const ErrorContainer = styled('div', props => ({
   background: '#e73b59',
   padding: '10px',
   position: 'absolute',
-  top: '20px', right: '20px',
+  top: '20px', right: '0px',
   zIndex: 5,
   color: '#E5E1DD'
 }));
@@ -67,6 +68,12 @@ const ActionText = styled('a', props => ({
   fontSize: '12px'
 }));
 
+const spring = {
+  type: 'spring',
+  damping: 20,
+  stiffness: 300
+};
+
 function App() {
   const getTasksFromSessionStorage = () => {
     const tasksFromSessionstorage = sessionStorage.getItem('storedTasks');
@@ -77,18 +84,37 @@ function App() {
   const [error, updateError] = useState(null);
   const [isEditing, updateEditModeState] = useState(false);
   const [sortedByPriority, updateSortByPriority] = useState(false);
+  const errorAnimationControls = useAnimation();
 
     useEffect(() => {
         isEditing && openModal(true);
-    }, [isEditing]);
+        
+        if (error) {
+          errorAnimationControls.start({
+            ease: 'easeOut',
+            right: '20px',
+            opacity: 1,
+            transition: { duration: .6, ease: 'easeOut', },
+          });
+        }
+    }, [isEditing, error, errorAnimationControls]);
 
   const storeTasksInSessionStorage = (tasksToBeStored) => {
       sessionStorage.setItem('storedTasks', JSON.stringify(tasksToBeStored))
   }
 
+  const animateOutError = async () => {
+    await errorAnimationControls.start({
+      right: '0px',
+      opacity: 0,
+      transition: { duration: .4, ease: 'easeIn', },
+    });
+    return updateError(false);
+  }
+
   const handleError = (err) => {
     updateError(err);
-    setTimeout(() => updateError(false), 3000)
+    setTimeout(() => animateOutError(), 3000)
   }
 
   const removeTasks = (id) => {
@@ -111,7 +137,7 @@ function App() {
         </TitleContainer>
         {sortByPriority(tasks).map(task => {
           return (
-          <Task key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
+          <Task layoutTransition={spring} key={task.id} openModal={openModal} updateEditModeState={updateEditModeState} removeTasks={removeTasks} task={task} />
         )})}
         
         <ActionsContainer>
@@ -126,15 +152,17 @@ function App() {
 
       {isModalOpen && <Modal 
         isEditing={isEditing}
+        errorAnimationControls={errorAnimationControls}
         updateEditModeState={updateEditModeState}
         tasks={tasks}
         handleError={handleError} 
+        animateOutError={animateOutError} 
         addTasks={addTasks} 
         openModal={openModal} />}
 
-        <ErrorContainer display={error ? 'flex' : 'none'}>
+        <ErrorContainer animate={errorAnimationControls}>
           <span>{error}</span>
-        </ErrorContainer>
+        </ErrorContainer>}
     </Div>
   );
 }
